@@ -136,3 +136,16 @@ select#salute {
 .md-select-menu-container{
   z-index: 1000000 !important;
 }
+
+button.md-datepicker-button.md-icon-button.md-button.md-ink-ripple {
+    display: none;
+}
+
+.md-datepicker-input {
+    min-width: 235px !important;
+    max-width: 328px !important;
+    padding: 0 !important;
+}
+.md-icon-button+.md-datepicker-input-container {
+    margin-left: 0 !important;
+}

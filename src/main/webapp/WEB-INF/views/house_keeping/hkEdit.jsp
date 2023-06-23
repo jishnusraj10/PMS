@@ -166,7 +166,7 @@
 					<div class="modal-footer">
 						<input type="hidden" id="update" value="save" ng-model="hk.update" />
 						<button id="saveHkStatusBtn" type="button" class="btn btn-success"
-							ng-click="saveHk()">
+							ng-click="saveHk(); gethkstatuscount()">
 							<spring:message code="pms.btn.save" />
 						</button>
 					</div>
