@@ -419,7 +419,7 @@ $(function(){
 										<div class="new_chk_in_lft_div_tbl_input">
 											<div class="col-sm-12">
 												<div class="row">
-													<md-input-container class="md-block chInp" flex-gt-sm>
+													<md-input-container class="p-0" >
 													<md-datepicker id="datePicker" readonly
 														ng-required="checkin.dtl.passportNo!='' && checkin.dtl.passportNo!=undefined"
 														ng-model="checkin.dtl.passportExpiryOn"
@@ -434,9 +434,14 @@ $(function(){
 										<div class="new_chk_in_lft_div_tbl_input">
 											<div class="col-sm-12">
 												<div class="row">
-												 <md-input-container class="md-block chInp" flex-gt-sm>
-													<input type="text" id="txtDate"
-														ng-model="checkin.hdr.expDepartDate" maxlength="50"/> </md-input-container>
+<!-- 												 <md-input-container class="md-block chInp" flex-gt-sm> -->
+<!-- 													<input type="text" id="txtDate" -->
+<!-- 														ng-model="checkin.hdr.expDepartDate" maxlength="50"/> </md-input-container> -->
+													<md-input-container class="searchFormInput">
+													<md-datepicker
+														ng-model="expDepartDate" ng-disabled="true"
+														min-date="departminDate" md-open-on-focus></md-datepicker>
+													</md-input-container>
 												</div>
 											</div>
 										</div>

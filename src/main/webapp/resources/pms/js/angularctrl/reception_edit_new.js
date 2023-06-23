@@ -102,6 +102,9 @@ pmsApp.controller('receptionEditController', ['$scope','$q','$http','DTOptionsBu
 		$scope.disApliedcnt = data.disApliedcnt;
 		$scope.expDepartDate = new Date($scope.checkin.hdr.expDepartDate);
 		$scope.arrDate = new Date($scope.checkin.hdr.arrDate);
+		
+		$scope.departminDate=new Date(new Date($scope.checkin.hdr.arrDate).getFullYear(),new Date($scope.checkin.hdr.arrDate).getMonth(),new Date($scope.checkin.hdr.arrDate).getDate()+1);
+		
 		$scope.checkinDiscountList = data.checkinDiscountList;
 		rec.isFetchingData = false;
 		ServiceIntial.setRoom($scope.checkin.hdr.roomNumber);
