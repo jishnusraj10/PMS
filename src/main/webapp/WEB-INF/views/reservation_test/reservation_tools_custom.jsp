@@ -197,7 +197,7 @@
 					</button>
 					<button type="button"
 						class="btn btn-labeled btn-success menuButtons"
-						ng-enabled="showNoshow" ng-click="noshow()">
+						ng-enabled="showNoshow" ng-click="noshow()" disabled="disableNoshow">
 						<span class="btn-label"><i class="fa fa-question-circle"
 							aria-hidden="true"></i></span>No-show
 					</button>

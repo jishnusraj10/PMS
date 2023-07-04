@@ -844,19 +844,32 @@
 										<div class="col-md-8">
 											<div class="roomType col-md-3">Room Type</div>
 											<div class="roomOption col-md-4">
-												<select class="form-control selectOption" ng-model="rmType"
-													ng-change="loadRoom()">
-													<option ng-repeat="type in roomTypesList"
-														ng-value="type.id">{{type.name}}</option>
+<!-- 												<select class="form-control selectOption" ng-model="rmType" -->
+<!-- 													ng-change="loadRoom()"> -->
+<!-- 													<option ng-value="type.id" ng-repeat="type in roomTypesList"  -->
+<!-- 														>{{type.name}}</option> -->
+<!-- 												</select> -->
+												
+												<select class="form-control selectfloorOption" id="rmType_id"
+													name="rmType_id"
+													ng-options="v.id as v.name for v in roomTypesList"
+													ng-model="rmType" ng-change="loadRoom()"
+													ng-disabled="disable_all">
 												</select>
 											</div>
 											<div class="col-md-1">Floor</div>
 											<div class="floorOption col-md-4 ">
-												<select class="form-control selectfloorOption"
-													ng-model="floor" ng-change="loadRoom()">
-													<option ng-repeat="type in floorList" value="{{type.id}}">{{type.name}}</option>
+<!-- 												<select class="form-control selectfloorOption" -->
+<!-- 													ng-model="floor" ng-change="loadRoom()"> -->
+<!-- 													<option ng-repeat="type in floorList" value="{{type.id}}">{{type.name}}</option> -->
+<!-- 												</select>  -->
+												
+												<select class="form-control selectfloorOption" id="floor_id"
+													name="floor_id"
+													ng-options="v.id as v.name for v in floorList"
+													ng-model="floor" ng-change="loadRoom()"
+													ng-disabled="disable_all">
 												</select>
-
 											</div>
 
 										</div>

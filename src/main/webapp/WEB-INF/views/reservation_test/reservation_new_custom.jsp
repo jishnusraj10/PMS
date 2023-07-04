@@ -621,8 +621,8 @@ Create Ticket
 										<input id="designation" class="form-control"
 											ng-model="resv.hdr.resvByDesignation" maxlength="50"> -->
 
-									<label class="control-label col-md-3 label_designation">State</label><span
-										class="red">*</span>
+									<label class="control-label col-md-3 label_designation">State<span
+										class="red">*</span></label>
 									<div class="col-sm-12 company_div" id="state_reserv">
 										<md-input-container> <md-select
 											class="md_slect_div_edit" ng-model="resv.hdr.state"
@@ -806,20 +806,20 @@ Create Ticket
 								class="rowStyle  new_rsvrn_srch_form col-sm-12 div_room_dtls">
 
 								<div class="col-md-6" id="genderMar">
-									<label class="control-label col-md-6">Gender</label><span
-										class="red" id="gender_red">*</span>
+									<label class="control-label col-md-6">Gender<span
+										class="red" id="gender_red">*</span></label>
 									<div class="new_chk_in_lft_div_tbl_input">
-										<div class="gender col-sm-6">
+										<div class="gender col-sm-8">
 
 											<md-input-container class="md-block chInp" flex-gt-sm>
 											<md-radio-group required ng-model="resv.hdr.gender">
 											<div class="col-md-6">
 												<md-radio-button value="Male" id="maleRadio" name="gender"
-													class="md-primary" checked='true'>Male</md-radio-button>
+													class="md-primary" checked='true'>Male  </md-radio-button>
 											</div>
 											<div class="col-md-3">
 												<md-radio-button name="gender" id="femaleRadio"
-													value="Female">Female</md-radio-button>
+													value="Female">Female  </md-radio-button>
 											</div>
 											</md-radio-group> </md-input-container>
 										</div>

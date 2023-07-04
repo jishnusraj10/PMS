@@ -107,6 +107,19 @@ pmsApp.controller('resvDtlController', ['$scope','$http','$mdDialog','$window',f
 			$scope.showNoshow=true;
 			$scope.disableTagButton = false;
 		}
+
+//		debugger
+//		if($scope.datas.canNoshow==0){
+//			var arrDate = new Date($scope.rDtl.arrDate);
+//			var hotelDate = new Date($scope.hotelDate);
+//
+//			if (arrDate > hotelDate) {
+//				$scope.disableNoshow = false;
+//			} else {
+//				$scope.disableNoshow = true;
+//			}
+//		}
+
 		var statusClass="";
 		switch ($scope.datas.resvStatus) {
 		case 1:
@@ -231,7 +244,8 @@ pmsApp.controller('resvDtlController', ['$scope','$http','$mdDialog','$window',f
 	/* ************ cutof date popup model	 ************ */
 	
 	$scope.loadCutOffDate=function(){	
-		$scope.cutOffForm.$dirty=false;
+		
+		$scope.cutOffForm.$dirty=true;
 		$scope.cutOffForm.$setPristine();
 		var minDate = $("#hotelDate").val();
 		$scope.minDate = new Date(minDate);
