@@ -219,7 +219,7 @@
 				<c:if test="${chk_isCanView}">
 					<button type="button"
 						class="btn btn-labeled btn-success menuButtons"
-						ng-enabled="showCheckIn" ng-click="checkIn()">
+						ng-disabled="showCheckIn" ng-click="checkIn()">
 						<span class="btn-label"><i class="fa fa-key"
 							aria-hidden="true"></i></span>CheckIn
 					</button>

@@ -18,7 +18,7 @@ function pettyCashController($scope,$compile,$http,DTOptionsBuilder,DTColumnBuil
 	var currDate=$filter('date')(new Date($("#hotelDate").val()), "yyyy-MM-dd");
 	$('#openingBalance').attr('readonly', true);
 	//$('.footer_div').show();
-	$scope.pettyExpenseList.item.push({id:"",entryDate:$scope.pettyDate,openingBalance:0,categoryId:"",voucherType:"",creditAmount:0,debitAmount:0,creditCardAmount:0,narration:""});
+	$scope.pettyExpenseList.item.push({id:"",entryDate:$scope.pettyDate,openingBalance:0,categoryId:"",voucherType:"",creditAmount:0,debitAmount:0,creditCardAmount:0,GpayAmount:0,narration:""});
 	$scope.pagination={offset:0,limit:'10'}
 	$scope.totalItems = 0;
 	$scope.bigTotalItems = 0;
@@ -85,7 +85,7 @@ function pettyCashController($scope,$compile,$http,DTOptionsBuilder,DTColumnBuil
 		$("#btnDelete").hide();
 		$("#btnSave").attr("disabled", false);
 		$scope.pettyExpenseList = { item : [] };
-		$scope.pettyExpenseList.item.push({id:"",entryDate:$scope.pettyDate,openingBalance:0,categoryId:"",voucherType:"",creditAmount:0,debitAmount:0,creditCardAmount:0,narration:""});
+		$scope.pettyExpenseList.item.push({id:"",entryDate:$scope.pettyDate,openingBalance:0,categoryId:"",voucherType:"",creditAmount:0,debitAmount:0,creditCardAmount:0,GpayAmount:0,narration:""});
 		$scope.openingBal();
 		if(currDate==$scope.pettyDate){
 			$('#openingBalance').attr('readonly', false);
@@ -184,6 +184,7 @@ function pettyCashController($scope,$compile,$http,DTOptionsBuilder,DTColumnBuil
 				$scope.pettyLists.push($scope.pettyExpenseList.item[i]);
 			}		
 			$scope.formData.saveExpense=JSON.stringify($scope.pettyLists);
+			debugger
 			console.log($scope.formData);
 			$http({
 				method:'POST',
@@ -270,22 +271,32 @@ function pettyCashController($scope,$compile,$http,DTOptionsBuilder,DTColumnBuil
 						$('#debitAmt'+i).prop('disabled', true);
 						$('#creditAmt'+i).prop('disabled', false);
 						$('#creditCardAmt'+i).prop('disabled', true);
+						$('#GpayAmt'+i).prop('disabled', true);
 						
 					}else if($('#paymentMode'+i).val()=="CONTRA"){
 						$('#creditAmt'+i).prop('disabled',+ true);
 						$('#creditCardAmt'+i).prop('disabled', true);
+						$('#GpayAmt'+i).prop('disabled', true);
 						$('#debitAmt'+i).prop('disabled', false);
 						
 					}
 					else if($('#paymentMode'+i).val()=="CONTRAC"){
 						$('#creditAmt'+i).prop('disabled',+ false);
 						$('#creditCardAmt'+i).prop('disabled', true);
+						$('#GpayAmt'+i).prop('disabled', true);
 						$('#debitAmt'+i).prop('disabled', true);
 						
+					}
+					else if($('#paymentMode'+i).val()=="JOURNALGPAY"){
+						$('#creditAmt'+i).prop('disabled',+ true);
+						$('#creditCardAmt'+i).prop('disabled', true);
+						$('#GpayAmt'+i).prop('disabled', false);
+						$('#debitAmt'+i).prop('disabled', true);
 					}
 					else{
 						$('#creditAmt'+i).prop('disabled',+ true);
 						$('#creditCardAmt'+i).prop('disabled', false);
+						$('#GpayAmt'+i).prop('disabled', false);
 						$('#debitAmt'+i).prop('disabled', true);
 					}
 				}
@@ -333,9 +344,11 @@ function pettyCashController($scope,$compile,$http,DTOptionsBuilder,DTColumnBuil
 			$('#debitAmt'+index).prop('disabled', true);
 			$('#creditAmt'+index).prop('disabled', false);
 			$('#creditCardAmt'+index).prop('disabled', true);
+			$('#GpayAmt'+index).prop('disabled', true);
 			$('#debitAmt').val("");
 			$scope.pettyExpenseList.item[index].debitAmount=0.00;
 			$scope.pettyExpenseList.item[index].creditCardAmount=0.00;
+			$scope.pettyExpenseList.item[index].GpayAmount=0.00;
 			$scope.creditTot();
 		}else if( $('#paymentMode'+index).val()=="CONTRA")
 			{
@@ -344,9 +357,11 @@ function pettyCashController($scope,$compile,$http,DTOptionsBuilder,DTColumnBuil
 			$('#creditAmt'+index).prop('disabled', true);
 			$('#debitAmt'+index).prop('disabled', false);
 			$('#creditCardAmt'+index).prop('disabled', true);
+			$('#GpayAmt'+index).prop('disabled', true);
 		     $('#creditAmt').val("");
 		     $scope.pettyExpenseList.item[index].creditAmount=0.00;
 				$scope.pettyExpenseList.item[index].creditCardAmount=0.00;
+				$scope.pettyExpenseList.item[index].GpayAmount=0.00;
 				$scope.debitTot();
 			}
 		
@@ -355,33 +370,55 @@ function pettyCashController($scope,$compile,$http,DTOptionsBuilder,DTColumnBuil
 			$('#debitAmt'+index).prop('disabled', true);
 			$('#creditAmt'+index).prop('disabled', false);
 			$('#creditCardAmt'+index).prop('disabled', true);
+			$('#GpayAmt'+index).prop('disabled', true);
 			$('#debitAmt').val("");
 			$scope.pettyExpenseList.item[index].debitAmount=0.00;
 			$scope.pettyExpenseList.item[index].creditCardAmount=0.00;
+			$scope.pettyExpenseList.item[index].GpayAmount=0.00;
 			$scope.creditTot();
 		}
 			
 		
-		else if( $('#paymentMode'+index).val()=="JOURNAL")
-		{
-		$('#creditCardAmt'+index).prop('disabled', false);
-		$('#creditAmt'+index).prop('disabled', true);
-		$('#debitAmt'+index).prop('disabled', true);
+		else if ($('#paymentMode' + index).val() == "JOURNAL") {
+			$('#creditCardAmt' + index).prop('disabled', false);
+			$('#GpayAmt' + index).prop('disabled', true);
+			$('#creditAmt' + index).prop('disabled', true);
+			$('#debitAmt' + index).prop('disabled', true);
+
+
+			$('#creditCardAmt').val("");
+
+			$scope.pettyExpenseList.item[index].debitAmount = 0.00;
+			$scope.pettyExpenseList.item[index].creditAmount = 0.00;
+			$scope.pettyExpenseList.item[index].GpayAmount=0.00;
+			$scope.creditCardAmtTot();
+		}
 		
-		
-		$('#creditCardAmt').val("");
-		
-		$scope.pettyExpenseList.item[index].debitAmount=0.00;
-		$scope.pettyExpenseList.item[index].creditAmount=0.00;
-		$scope.creditCardAmtTot();
-	}
+		else if ($('#paymentMode' + index).val() == "JOURNALGPAY") {
+			$('#creditCardAmt' + index).prop('disabled', true);
+			$('#GpayAmt' + index).prop('disabled', false);
+			$('#creditAmt' + index).prop('disabled', true);
+			$('#debitAmt' + index).prop('disabled', true);
+
+
+			$('#GpayAmt').val("");
+
+			$scope.pettyExpenseList.item[index].debitAmount = 0.00;
+			$scope.pettyExpenseList.item[index].creditAmount = 0.00;
+			$scope.pettyExpenseList.item[index].creditCardAmount=0.00;
+			$scope.GpayAmtTot();
+		}
 		else{
 				$('#creditAmt'+index).prop('disabled', true);
 				$('#debitAmt'+index).prop('disabled', false);
 				$('#creditCardAmt'+index).prop('disabled', true);
+				$('#GpayAmt'+index).prop('disabled', true);
 				
 				$('#creditCardAmt').val("");
+				$('#GpayAmt').val("");
+				
 				$scope.pettyExpenseList.item[index].creditCardAmount=0.00;
+				$scope.pettyExpenseList.item[index].GpayAmount=0.00;
 				$scope.debitTot();
 				
 			}
@@ -428,7 +465,7 @@ function pettyCashController($scope,$compile,$http,DTOptionsBuilder,DTColumnBuil
 				//$(this).closest('tr').find('#paymentMode').css('border-color', 'rgb(234 14 14)');
 				//$rootScope.$broadcast('on_AlertMessage_ERR',"Please Enter RecQty");
 			}else if($scope.pettyExpenseList.item[$scope.pettyExpenseList.item.length-1].debitAmount==0 && $scope.pettyExpenseList.item[$scope.pettyExpenseList.item.length-1].creditAmount==0
-					    && $scope.pettyExpenseList.item[$scope.pettyExpenseList.item.length-1].creditCardAmount == 0){
+					    && $scope.pettyExpenseList.item[$scope.pettyExpenseList.item.length-1].creditCardAmount == 0 && $scope.pettyExpenseList.item[$scope.pettyExpenseList.item.length-1].GpayAmount == 0){
 				$("#petty_table tr:nth-child("+($scope.pettyExpenseList.item.length)+") td:nth-child("+(3)+")").find("#paymentMode").select();
 				//$rootScope.$broadcast('on_AlertMessage_ERR',"Please Enter RecQty");
 				$(".error_msg").css("display", "block")
@@ -437,7 +474,7 @@ function pettyCashController($scope,$compile,$http,DTOptionsBuilder,DTColumnBuil
 				//$(this).closest('tr').find('.amount').css('border-color', 'rgb(234 14 14)');
 			}else{
 				$(".error_msg").css("display", "none");
-				$scope.pettyExpenseList.item.push({id:"",categoryId:"",voucherType:"",creditAmount:0,creditCardAmount:0,debitAmount:0,narration:""});
+				$scope.pettyExpenseList.item.push({id:"",categoryId:"",voucherType:"",creditAmount:0,creditCardAmount:0,GpayAmount:0,debitAmount:0,narration:""});
 				//$scope.disable_all=false;
 				
 				return true;
@@ -546,6 +583,21 @@ function pettyCashController($scope,$compile,$http,DTOptionsBuilder,DTColumnBuil
 		return parseFloat(tot).toFixed(2);
 	}
 	
+	//-----  GPay by Jishnu  --
+	
+	$scope.GpayAmtTot=function(){
+		var tot=0.00;
+		for(var i=0;i<$scope.pettyExpenseList.item.length;i++){
+			/*	if($scope.pettyExpenseList.item[i].debitAmount==""){
+				tot=0.00;
+			}else{*/
+			if($scope.pettyExpenseList.item[i].GpayAmount!="")
+				tot+=parseFloat($scope.pettyExpenseList.item[i].GpayAmount);
+			//}
+		}
+//		$scope.closing_bal.GpayAmt=parseFloat(tot).toFixed(2);
+		return parseFloat(tot).toFixed(2);
+	}
 	
 
 	$scope.creditTot=function(){
@@ -657,7 +709,7 @@ function pettyCashController($scope,$compile,$http,DTOptionsBuilder,DTColumnBuil
 				//$(this).closest('tr').find('#paymentMode').css('border-color', 'rgb(234 14 14)');
 				//$rootScope.$broadcast('on_AlertMessage_ERR',"Please Enter RecQty");
 			}else if($scope.pettyExpenseList.item[$scope.pettyExpenseList.item.length-1].debitAmount==0 && $scope.pettyExpenseList.item[$scope.pettyExpenseList.item.length-1].creditAmount==0
-					&& $scope.pettyExpenseList.item[$scope.pettyExpenseList.item.length-1].creditCardAmount == 0){
+					&& $scope.pettyExpenseList.item[$scope.pettyExpenseList.item.length-1].creditCardAmount == 0 && $scope.pettyExpenseList.item[$scope.pettyExpenseList.item.length-1].GpayAmount == 0){
 				$("#petty_table tr:nth-child("+($scope.pettyExpenseList.item.length)+") td:nth-child("+(3)+")").find("#paymentMode").select();
 				//$rootScope.$broadcast('on_AlertMessage_ERR',"Please Enter RecQty");
 				$(".error_msg").css("display", "block")
@@ -714,13 +766,18 @@ function pettyCashController($scope,$compile,$http,DTOptionsBuilder,DTColumnBuil
 		for(var i=0;i<$scope.expenseArray.length;i++){
 			//if($scope.expenseDetails[i].id==id){
 				$scope.pettyExpenseList.item.push({id:$scope.expenseArray[i].id,
-					categoryId:$scope.expenseArray[i].categoryId,voucherType:$scope.expenseArray[i].voucherType,creditAmount:0,creditCardAmount:0,debitAmount:0,narration:$scope.expenseArray[i].narration});
+					categoryId:$scope.expenseArray[i].categoryId,voucherType:$scope.expenseArray[i].voucherType,creditAmount:0,creditCardAmount:0,GpayAmount:0,debitAmount:0,narration:$scope.expenseArray[i].narration});
 				if($scope.expenseArray[i].voucherType=="PAYMENT"){
 					$scope.pettyExpenseList.item[i].creditAmount=$scope.expenseArray[i].amount;
 					$("#creditAmt").prop("disabled",true);
 				}else if($scope.expenseArray[i].voucherType=="JOURNAL"){
 					$scope.pettyExpenseList.item[i].creditCardAmount=$scope.expenseArray[i].amount;
 					$("#creditCardAmt").prop("disabled",true);
+					
+				}
+				else if($scope.expenseArray[i].voucherType=="JOURNALGPAY"){
+					$scope.pettyExpenseList.item[i].GpayAmount=$scope.expenseArray[i].amount;
+					$("#GpayAmt").prop("disabled",true);
 					
 				}
 				////////////////////////////////////////

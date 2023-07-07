@@ -315,7 +315,12 @@ public class PettyCashDaoImp implements PettyCashDao{
 				}
 		
 				else {
-					amount=saveExpArray.get("creditCardAmount").getAsDouble();
+					if(saveExpArray.get("GpayAmount").getAsDouble() == 0) {
+						amount=saveExpArray.get("creditCardAmount").getAsDouble();
+					}
+					else {
+						amount=saveExpArray.get("GpayAmount").getAsDouble();
+					}
 
 				}
 

@@ -326,6 +326,14 @@
 	value="${(curPageDAYENDReportObj.isCanExport() && curPageDAYENDReportObj.isIs_export_applicable())?true:false}" />
 
 
+<c:set var="GPAYreport_isCanView" scope="request"
+	value="${(curPageGPAYReportObj.isCanView() && curPageGPAYReportObj.isIs_view_applicable())?true:false}" />		
+<c:set var="GPAYreport_isCanExecute" scope="request"
+	value="${(curPageGPAYReportObj.isCanExecute() && curPageGPAYReportObj.isIs_execute_applicable())?true:false}" />
+<c:set var="GPAYreport_isCanExport" scope="request"
+	value="${(curPageGPAYReportObj.isCanExport() && curPageGPAYReportObj.isIs_export_applicable())?true:false}" />
+
+
 <html ng-app="pmsApp">
 <head>
 <script type="text/javascript" language="javascript">
@@ -375,6 +383,7 @@ window.PosRevenueList_isCanView=${PosRevenueList_isCanView};
 window.B2Breport_isCanView=${B2Breport_isCanView};
 window.B2Creport_isCanView=${B2Creport_isCanView};
 window.DAYENDreport_isCanView =${DAYENDreport_isCanView}
+window.GPayreport_isCanView =${GPayreport_isCanView}
 function DisableBackButton() {
 window.history.forward()
 }

@@ -193,6 +193,7 @@
 							<th style="width: 10%; max-width: 270px; text-align: center;">Debit</th>
 							<th style="width: 10%; max-width: 270px; text-align: center;">Credit</th>
 							<th style="width: 10%; max-width: 270px; text-align: center;">Credit(Credit Card)</th>
+							<th style="width: 10%; max-width: 270px; text-align: center;">Gpay</th>
 							<th style="text-align: center;">Narration</th>
 							<th></th>
 						</tr>
@@ -268,6 +269,18 @@
 									</div>
 								</div>
 							</td>
+							<td class="amount">
+								<div class="resv-txt">
+									<div class="form-group col-md-12">
+										<input class="form-control GpayAmt"
+											ng-keypress="closing_balance()" id="GpayAmt{{$index}}"
+											maxlength="10" ng-model="item.GpayAmount" type="text"
+											ng-disabled="disable_all"
+											onkeypress="return event.charCode === 0 || /\d/.test(String.fromCharCode(event.charCode));"
+											row-add="addItem($index)">
+									</div>
+								</div>
+							</td>
 							<td>
 								<div class="resv-txt">
 									<div class="form-group col-md-12">
@@ -290,6 +303,7 @@
 
 							<td id="credit_tot_td">{{creditTot()}}</td>
 							<td id="credit_tot_td">{{creditCardAmtTot()}}</td>
+							<td id="credit_tot_td">{{GpayAmtTot()}}</td>
 							
 							<td></td>
 							<!-- <td colspan="6"></td>-->

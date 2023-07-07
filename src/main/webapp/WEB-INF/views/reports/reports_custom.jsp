@@ -102,6 +102,26 @@
 				</div>
 				
 				
+				<div
+					ng-if="reportSelected.id == 44">
+					<md-radio-group ng-model="rad.inputGroup">
+					<div class="col-md-12">
+						<div class="col-md-4 padding_new">
+							<md-radio-button value="today" class="md-primary">Today</md-radio-button>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="col-md-4 padding_new">
+							<md-radio-button value="ondate"> On Date</md-radio-button>
+						</div>
+						<div class="col-md-8">
+							<md-datepicker ng-model="rad.dateon" md-placeholder="Enter date"></md-datepicker>
+						</div>
+					</div>
+					</md-radio-group>
+				</div>
+				
+				
 				
 				<!-- <div ng-if="reportSelected.id==5">
 					<label>Print In-House List</label>
