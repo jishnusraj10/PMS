@@ -2428,5 +2428,47 @@ public class ReportsDaoImpl implements ReportsDao {
 
 		return finYFrom;
 	}
-
+	@Override
+	public List<PettyCash> getGPayDataList(Date fromDate, Date toDate) {
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		String selSql="";
+		List<PettyCash> pettyCashList=new ArrayList<>();
+		
+		 selSql="SELECT * FROM (SELECT " + 
+				"	cashexp.*, cash. name " + 
+				"FROM " + 
+				"	petty_cash_expense cashexp " + 
+				"INNER JOIN petty_cash_category cash ON cash.id = cashexp.category_id WHERE cashexp.voucher_name='JOURNALGPAY' "
+				+ "AND cashexp.entry_date BETWEEN ? AND ? AND cashexp.is_deleted=0 )A ORDER BY entry_date";
+			try {
+				connection = dbConnection.getConnection();
+				statement = connection.prepareStatement(selSql);
+				statement.setDate(1, fromDate);
+				statement.setDate(2, toDate);
+			resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				PettyCash pettyCash=new PettyCash();
+				pettyCash.setAmount(resultSet.getDouble("amount"));
+				pettyCash.setCategoryName(resultSet.getString("name"));
+				pettyCash.setEntryDate(resultSet.getDate("entry_date"));
+				pettyCash.setVoucherType(resultSet.getString("voucher_name"));
+				pettyCash.setVoucherNo(resultSet.getInt("voucher_no"));
+				pettyCash.setNarration(resultSet.getString("narration"));
+				pettyCashList.add(pettyCash);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CustomException();
+		}
+			finally {
+				dbConnection.releaseResource(statement);
+				dbConnection.releaseResource(resultSet);
+				dbConnection.releaseResource(connection);
+				
+			}
+	
+		return pettyCashList;
+	}
 }

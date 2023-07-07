@@ -88,7 +88,7 @@ public class DashboardDAOImpl implements DashboardDAO {
 				jobject.addProperty("total_rooms_in_inventory", rs.getInt("temp_total_rooms_in_inventory"));
 				jobject.addProperty("occupied_rooms", rs.getInt("temp_occupied_rooms"));
 				jobject.addProperty("reserved_today", rs.getInt("temp_reserved_today"));
-				
+
 			}
 
 		} catch (Exception ex) {
@@ -154,16 +154,23 @@ public class DashboardDAOImpl implements DashboardDAO {
 		if (floor != 0) {
 			floorSql = " AND room.floor_id = " + floor;
 		}
-					
-	/*	String sql = "SELECT room.id, room.floor_id, room.number, room.`name`, room.inv_status, room.hk_status, room.occ_status, room.room_type_id, "
-				+ "room_type.`code` AS roomTypeCode, checkin.checkin_no, checkin.arr_date, checkin.exp_depart_date, checkin.act_depart_date,"
-				+ " checkin.`status`, room.is_deleted,(select room_status from resv_room where resv_room.room_number = room.number ORDER BY room_status LIMIT 1) AS roomStatus FROM room INNER JOIN room_type ON room.room_type_id = room_type.id "
-				+ "LEFT JOIN (SELECT checkin_hdr.checkin_no, checkin_hdr.arr_date, checkin_hdr.exp_depart_date, checkin_hdr.act_depart_date, "
-				+ "checkin_hdr.room_number, checkin_hdr.`status` FROM checkin_hdr ORDER BY checkin_hdr.checkin_no DESC) "
-				+ " checkin ON checkin.room_number = room.number WHERE room.is_deleted = 0 " + roomTypeSql + floorSql
-				+ " GROUP BY room.number ORDER BY room.room_type_id, room.number";*/
-		
-		
+
+		/*
+		 * String sql =
+		 * "SELECT room.id, room.floor_id, room.number, room.`name`, room.inv_status, room.hk_status, room.occ_status, room.room_type_id, "
+		 * +
+		 * "room_type.`code` AS roomTypeCode, checkin.checkin_no, checkin.arr_date, checkin.exp_depart_date, checkin.act_depart_date,"
+		 * +
+		 * " checkin.`status`, room.is_deleted,(select room_status from resv_room where resv_room.room_number = room.number ORDER BY room_status LIMIT 1) AS roomStatus FROM room INNER JOIN room_type ON room.room_type_id = room_type.id "
+		 * +
+		 * "LEFT JOIN (SELECT checkin_hdr.checkin_no, checkin_hdr.arr_date, checkin_hdr.exp_depart_date, checkin_hdr.act_depart_date, "
+		 * +
+		 * "checkin_hdr.room_number, checkin_hdr.`status` FROM checkin_hdr ORDER BY checkin_hdr.checkin_no DESC) "
+		 * + " checkin ON checkin.room_number = room.number WHERE room.is_deleted = 0 "
+		 * + roomTypeSql + floorSql +
+		 * " GROUP BY room.number ORDER BY room.room_type_id, room.number";
+		 */
+
 		String sql = "SELECT room.id, room.floor_id, room.number, room.`name`, room.inv_status, room.hk_status, room.occ_status, room.room_type_id, "
 				+ "room_type.`code` AS roomTypeCode, checkin.checkin_no, checkin.arr_date, checkin.exp_depart_date, checkin.act_depart_date,"
 				+ " checkin.`status`, room.is_deleted,(select room_status from resv_room where resv_room.room_number = room.number ORDER BY room_status LIMIT 1) AS roomStatus FROM room INNER JOIN room_type ON room.room_type_id = room_type.id "
@@ -171,10 +178,6 @@ public class DashboardDAOImpl implements DashboardDAO {
 				+ "FROM checkin_hdr GROUP BY room_number)T1 INNER JOIN checkin_hdr T2 ON T1.checkin_no = T2.checkin_no )"
 				+ " checkin ON checkin.room_number = room.number WHERE room.is_deleted = 0 " + roomTypeSql + floorSql
 				+ " GROUP BY room.number ORDER BY room.room_type_id, room.number";
-		
-		
-		
-		
 
 		List<RoomDetails> roomDtlList = new ArrayList<RoomDetails>();
 		RoomDetails roomDtl = null;
@@ -184,7 +187,7 @@ public class DashboardDAOImpl implements DashboardDAO {
 		try {
 			statement = connection.createStatement();
 			rs = statement.executeQuery(sql);
-	
+
 			while (rs.next()) {
 				roomDtl = new RoomDetails();
 				roomDtl.setActualDepartDate(rs.getDate("act_depart_date"));
@@ -205,14 +208,12 @@ public class DashboardDAOImpl implements DashboardDAO {
 				roomDtl.setRoomTypeId(rs.getInt("room_type_id"));
 				roomDtl.setResvStatus(rs.getInt("roomStatus"));
 				roomDtlList.add(roomDtl);
-	
+
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw new CustomException();
-		} 
-		finally {
+		} finally {
 			dbConnection.releaseResource(connection);
 			dbConnection.releaseResource(statement);
 			dbConnection.releaseResource(rs);
@@ -221,7 +222,8 @@ public class DashboardDAOImpl implements DashboardDAO {
 		return roomDtlList;
 	}
 
-	public List<RoomStatusCount> getRoomStatusCount(int roomType, int floor,JsonArray defaultValuesArray) throws Exception {
+	public List<RoomStatusCount> getRoomStatusCount(int roomType, int floor, JsonArray defaultValuesArray)
+			throws Exception {
 		Connection connection = dbConnection.getConnection();
 		String roomTypeSql = "";
 		String floorSql = "";
@@ -232,38 +234,34 @@ public class DashboardDAOImpl implements DashboardDAO {
 		if (floor != 0) {
 			floorSql = " AND room.floor_id = " + floor;
 		}
-		
-		List<Integer> defaultValues = new Gson().fromJson(defaultValuesArray, new TypeToken<List<Integer>>() {}.getType());
 
-		
+		List<Integer> defaultValues = new Gson().fromJson(defaultValuesArray, new TypeToken<List<Integer>>() {
+		}.getType());
+
 		String hkstatusCondition = " AND room.hk_status IN (";
-		  if (defaultValues.contains(1)) {
-		    hkstatusCondition += "1,";
-		  }
-		  if (defaultValues.contains(2)) {
-		    hkstatusCondition += "2,";
-		  }
-		  if (defaultValues.contains(3)) {
-		    hkstatusCondition += "3,";
-		  }
-		  // Remove the trailing comma if there are any conditions
-		  if (hkstatusCondition.endsWith(",")) {
-		    hkstatusCondition = hkstatusCondition.substring(0, hkstatusCondition.length() - 1);
-		  }
-		  hkstatusCondition += ")";
-		
-		String sql = " SELECT "
-				+ "    COUNT(CASE WHEN room.occ_status = 1 THEN 1 END) AS Occupied,"
+		if (defaultValues.contains(1)) {
+			hkstatusCondition += "1,";
+		}
+		if (defaultValues.contains(2)) {
+			hkstatusCondition += "2,";
+		}
+		if (defaultValues.contains(3)) {
+			hkstatusCondition += "3,";
+		}
+		// Remove the trailing comma if there are any conditions
+		if (hkstatusCondition.endsWith(",")) {
+			hkstatusCondition = hkstatusCondition.substring(0, hkstatusCondition.length() - 1);
+		}
+		hkstatusCondition += ")";
+
+		String sql = " SELECT " + "    COUNT(CASE WHEN room.occ_status = 1 THEN 1 END) AS Occupied,"
 				+ "    COUNT(CASE WHEN room.occ_status = 2 THEN 1 END) AS Vacant,"
-				+ "    COUNT(CASE WHEN room.inv_status = 2 THEN 1 END) AS OutInventory,"
+				+ "    COUNT(CASE WHEN room.inv_status = 1 THEN 1 END) AS OutInventory,"
 				+ "    COUNT(CASE WHEN room.hk_status = 1 THEN 1 END) AS Dirty,"
 				+ "    COUNT(CASE WHEN room.hk_status = 2 THEN 1 END) AS Cleaning,"
-				+ "    COUNT(CASE WHEN room.hk_status = 3 THEN 1 END) AS Clean"
-				+ "	   FROM room "
-				+ "	   INNER JOIN room_type ON room.room_type_id = room_type.id \n"
-				+ "	   WHERE room.is_deleted = 0 "+ roomTypeSql + floorSql + hkstatusCondition ;
-		
-		
+				+ "    COUNT(CASE WHEN room.hk_status = 3 THEN 1 END) AS Clean" + "	   FROM room "
+				+ "	   INNER JOIN room_type ON room.room_type_id = room_type.id \n" + "	   WHERE room.is_deleted = 0 "
+				+ roomTypeSql + floorSql + hkstatusCondition;
 
 		List<RoomStatusCount> roomstatuscountlst = new ArrayList<RoomStatusCount>();
 		RoomStatusCount roomDtl = null;
@@ -273,7 +271,7 @@ public class DashboardDAOImpl implements DashboardDAO {
 		try {
 			statement = connection.createStatement();
 			rs = statement.executeQuery(sql);
-	
+
 			while (rs.next()) {
 				roomDtl = new RoomStatusCount();
 				roomDtl.setOccupied(rs.getInt("Occupied"));
@@ -283,14 +281,12 @@ public class DashboardDAOImpl implements DashboardDAO {
 				roomDtl.setCleaning(rs.getInt("Cleaning"));
 				roomDtl.setClean(rs.getInt("Clean"));
 				roomstatuscountlst.add(roomDtl);
-	
+
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw new CustomException();
-		} 
-		finally {
+		} finally {
 			dbConnection.releaseResource(connection);
 			dbConnection.releaseResource(statement);
 			dbConnection.releaseResource(rs);
@@ -298,6 +294,5 @@ public class DashboardDAOImpl implements DashboardDAO {
 
 		return roomstatuscountlst;
 	}
-
 
 }

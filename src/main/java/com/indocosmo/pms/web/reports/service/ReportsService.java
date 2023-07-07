@@ -79,4 +79,5 @@ public interface ReportsService {
 	public JsonArray getDayEndSummary(Date currentDate)throws SQLException, Exception;
 	public String getFinancialYear(Date fromDate)throws SQLException, Exception;
 	public Date getFinancialYearFrom(Date fromDate)throws SQLException, Exception;
+	public List<PettyCash> getGpayDataList(Date fromDate, Date toDate) throws SQLException;
 }

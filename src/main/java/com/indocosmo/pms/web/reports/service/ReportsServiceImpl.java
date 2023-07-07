@@ -301,7 +301,11 @@ public class ReportsServiceImpl implements ReportsService {
 	}
 	
 
-
+	@Override
+	public List<PettyCash> getGpayDataList(Date fromDate, Date toDate) throws SQLException{
+		
+		return reportsDao.getGPayDataList(fromDate,toDate);
+	}
 
 }
 

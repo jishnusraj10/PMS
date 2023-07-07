@@ -73,5 +73,6 @@ public interface ReportsDao {
 	public JsonArray getDayEndSummary(Date currentDate)throws SQLException;
 	public String getFinancialYear(Date fromDate)throws SQLException;
 	public Date getFinancialYearFrom(Date fromDate)throws SQLException;
+	public List<PettyCash> getGPayDataList(Date fromDate, Date toDate) throws SQLException;
 }
 

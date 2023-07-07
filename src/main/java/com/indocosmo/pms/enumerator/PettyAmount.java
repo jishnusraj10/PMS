@@ -6,7 +6,7 @@ import java.util.Map;
 
 public enum PettyAmount {
 
-	PAYMENT(1,"payment"),CONTRA(2,"contra"),JOURNAL(3,"Journal"),CONTRAC(4,"ContraC");
+	PAYMENT(1,"payment"),CONTRA(2,"contra"),JOURNAL(3,"Journal"),CONTRAC(4,"ContraC"),JOURNALGPAY(5,"JournalGpay");
 	
 	private static final Map<Integer, PettyAmount> PETTYPEMAP = new HashMap<Integer, PettyAmount>();
 	

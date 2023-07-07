@@ -54,6 +54,7 @@ import com.indocosmo.pms.web.reports.model.ReceptionReport;
 import com.indocosmo.pms.web.reports.model.ReportTemplate;
 import com.indocosmo.pms.web.reports.model.RoomBookingReport;
 import com.indocosmo.pms.web.reports.model.TemplateReport;
+import com.indocosmo.pms.web.reports.report_designs.CreditCardReport;
 import com.indocosmo.pms.web.reports.report_designs.TallyExportXml;
 import com.indocosmo.pms.web.reports.service.ReportsService;
 import com.indocosmo.pms.web.reservation_test.model.ResvHdr;
@@ -178,6 +179,8 @@ public class ReportsController {
 				"REPORTS_B2C");
 		SysPermissions permissionDAYENDReports = pageAccessPermissionService.getPermission(session,
 				"REPORTS_DAYEND");
+		SysPermissions permissionGPayReports = pageAccessPermissionService.getPermission(session,
+				"REPORTS_GPAY");
 		String pageUrl = REPORT_LIST_PAGE_URL;
 		if ((permissionObjExpArr.isCanView() && permissionObjExpArr.isIs_view_applicable())
 				|| (permissionObjActArr.isCanView() && permissionObjActArr.isIs_view_applicable())
@@ -227,7 +230,7 @@ public class ReportsController {
 				||	(permissionB2BReports.isCanView() && permissionB2BReports.isIs_view_applicable())
 				||	(permissionB2CReports.isCanView() && permissionB2CReports.isIs_view_applicable())
 				||	(permissionDAYENDReports.isCanView() && permissionDAYENDReports.isIs_view_applicable())
-				
+				||	(permissionGPayReports.isCanView() && permissionGPayReports.isIs_view_applicable())
 				)
 		{
 			model.addAttribute("curPagePerExpArrObj", permissionObjExpArr);
@@ -274,6 +277,7 @@ public class ReportsController {
 			model.addAttribute("curPageB2BReportObj", permissionB2BReports);
 			model.addAttribute("curPageB2CReportObj", permissionB2CReports);
 			model.addAttribute("curPageDAYENDReportObj", permissionDAYENDReports);
+			model.addAttribute("curPageGPAYReportObj", permissionGPayReports);
 
 		} else {
 			pageUrl = SYDEF_PERMISION_DENIED_PAGE_URL;
@@ -309,6 +313,7 @@ public class ReportsController {
 		List<Transaction> B2BReport = null;
 		List<Transaction> B2CReport = null;
 		List<DayEndRport> DayEndReportList = null;
+		List<PettyCash> GPayReportList = null;
 
 		List<TemplateReport> reportTemplateList = null;
 		String revenueReport = null;
@@ -1718,7 +1723,45 @@ public class ReportsController {
 
 				}
 				break;
-
+				
+			case 44:
+				
+				if (jobj.get("inpGroup").getAsString().equals("today")) {
+					fromDate = new Date(commonSettings.getHotelDate().getTime());
+					toDate = new Date(commonSettings.getHotelDate().getTime());
+					tr.setFilterDetails("On Date ".concat(String.valueOf(simpleDateFormatHotelDate.format(fromDate))));
+				} else if (jobj.get("inpGroup").getAsString().equals("ondate")) {
+					fromDate = new java.sql.Date(dateFormatFrom.parse(jobj.get("input").getAsString()).getTime());
+					toDate = new java.sql.Date(dateFormatFrom.parse(jobj.get("input").getAsString()).getTime());
+					tr.setFilterDetails("On Date ".concat(String.valueOf(simpleDateFormatHotelDate.format(fromDate))));
+				} else if (jobj.get("inpGroup").getAsString().equals("datebtwn")) {
+					JsonObject jobjInp = jobj.get("input").getAsJsonObject();
+					fromDate = new java.sql.Date(dateFormatFrom.parse(jobjInp.get("dateFrom").getAsString()).getTime());
+					toDate = new java.sql.Date(dateFormatFrom.parse(jobjInp.get("dateTo").getAsString()).getTime());
+					tr.setFilterDetails(
+							"Date Between ".concat(String.valueOf(simpleDateFormatHotelDate.format(fromDate)))
+							.concat(" to ").concat(String.valueOf(simpleDateFormatHotelDate.format(toDate))));
+				}
+				creditCardExportList=reportService.getGpayDataList(fromDate,toDate);
+				tr.setHeader("Google Pay Transaction");
+				reportTempl.setDateFormat(dateFormat);
+				reportTempl.setPettyCashList(creditCardExportList);
+				
+				if (reportType == 1) {
+					mv = new ModelAndView("pdfViewGPayExportReport", "reportTemplate", reportTempl);
+				} else {
+					reportTempl.setCompanyname(tr.getName());
+					reportTempl.setBuilding(tr.getBuilding());
+					reportTempl.setStreet(tr.getStreet());
+					reportTempl.setCity(tr.getCity());
+					reportTempl.setDateFilter(tr.getFilterDetails());
+					reportTempl.setReportname("Google Pay Transaction");
+					mv = new ModelAndView("pdfViewGPayExportReportExcel", "reportTemplate", reportTempl);
+					//mv.addObject("companyData", companyList);
+				}
+				break;
+			
+			
 			
 			}
 

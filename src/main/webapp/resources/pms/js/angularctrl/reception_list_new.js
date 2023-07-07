@@ -624,7 +624,8 @@ function dialogController3($scope, $mdDialog, folioNo, chk) {
 			url : '../roomType/getRoomTypes',
 			method : "GET",
 		}).then(function(response) {
-			//$scope.room_type=response.data;	
+			//$scope.room_type=response.data;
+			//$scope.roomTypesList =[{id:0,name:'ALL'}]	
 			angular.forEach(response.data,function(value,index){
 				var type= {id:value.id,name:value.name};
 				$scope.room_type = response.data;

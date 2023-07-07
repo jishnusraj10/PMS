@@ -154,6 +154,9 @@ pmsApp.controller('reportsCtrl', ['$q','$scope','$http','$mdDialog','$filter',fu
 		$scope.reports.push({category:3,cat_name:'Transaction',id:43,header:'Day End Report'});
 	}
 	
+	if(window.GPayreport_isCanView){
+		$scope.reports.push({category:3,cat_name:'Transaction',id:44,header:'GPay Report'});
+	}
 	
 	if(window.folio_isCanView){
 		$scope.reports.push({category:4,cat_name:'Folio Balance',id:10,header:'Folio Balance Report'});
