@@ -117,6 +117,21 @@
 				<div id="validator_tax" class='validator_cls'></div>
 			</div>
 		</div>
+		
+		<div class="pms_row_bottom_align">
+			<div class="pms_label_div">
+				<form:label path="hsn_code" cssClass="pms_label_vertical">
+					<spring:message code="pms.label.hsn_code"></spring:message>
+				</form:label>
+
+				<span class="pms_required"></span>
+			</div>
+			<div class="pms_input_div">
+				<form:input path="hsn_code" id="hsn_code"
+					cssClass="validator pms_text refresh_account" maxlength="40" />
+				<div id="validator_hsn_code" class='validator_cls'></div>
+			</div>
+		</div>
 
 		<!--ADD and DELETE button  -->
 		<div id="sub_btn_div" class="pms_sub_btn_div">

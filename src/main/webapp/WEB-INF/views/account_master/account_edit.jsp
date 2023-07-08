@@ -176,13 +176,21 @@ window.cp_isCanEdit=${cp_isCanEdit}
 										class="red">*</span></label>
 									<div class="col-md-6 col-xs-11">
 
-										<form:input path="hsn_code" id="hsn_code" 
-											cssClass="form-control form-control-inline" oninput="this.value = this.value.replace(/[^0-9]+/g, '');"
-											maxlength="15" /> 
-											
-
+										<form:input path="hsn_code" id="hsncode" 
+											cssClass="form-control form-control-inline input-medium refresh_discount additional validator" 
+											maxlength="10" onkeypress="return isNumber(event)"/> 
 									</div>
+									
+									<div class="col-md-1 col-xs-11 tick_green">
+										<span id="hsncode_check" class="switch-right"
+											style="display: none;"><i class=" fa fa-check"></i></span> <span
+											id="hsncode_warning" class="switch-right warning_red"
+											style="display: none;"><i class="fa fa-warning"></i></span>
+									</div>
+									
+															
 								</div>
+								
                                 <!-- end -->
                                 
 								<div class="form-group" id="credit_days">

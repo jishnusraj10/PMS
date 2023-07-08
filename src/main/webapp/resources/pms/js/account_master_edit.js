@@ -152,7 +152,6 @@ function refreshData() {
  * @returns {Boolean} when the validation fails
  */
 function saveDatas() {
-	
 	if (validation('.validator') == "false") {
 		if($("#txtcode").val()==""){
 			$("#txtcode").focus();
@@ -162,6 +161,9 @@ function saveDatas() {
 		}
 		if($("#service_charge").val()=="" && $("#txtname").val()!=="" && $("#txtcode").val()!==""){
 			$("#service_charge").focus();
+		}
+		if($("#hsncode").val()=="" && $("#service_charge").val()=="" && $("#txtname").val()!=="" && $("#txtcode").val()!==""){
+			$("#hsncode").focus();
 		}
 		return false;
 	}else{
