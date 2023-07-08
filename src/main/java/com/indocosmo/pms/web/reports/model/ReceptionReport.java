@@ -21,6 +21,7 @@ public class ReceptionReport {
 	private int children;
 	private int infants;
 	private int adults;
+	private String mealplan;
 	
 	@Transient
 	private String dateFormat;
@@ -378,5 +379,10 @@ public class ReceptionReport {
 	public void setAdults(int adults) {
 		this.adults = adults;
 	}
-	
+	public String getMealPlan() {
+		return mealplan;
+	}
+	public void setMealPlan(String mealplan) {
+		this.mealplan = mealplan;
+	}
 }

@@ -68,7 +68,10 @@ public class OccupancyReportList extends AbstractPdfViewReports{
 			cell.setPhrase(new Phrase("Arrival Date", font));
 			table.addCell(cell);
 			
-			cell.setPhrase(new Phrase("Depart Date", font));	
+//			cell.setPhrase(new Phrase("Depart Date", font));	
+//			table.addCell(cell);
+			
+			cell.setPhrase(new Phrase("Meal Plan", font));	
 			table.addCell(cell);
 
 			int count=1;
@@ -108,13 +111,41 @@ public class OccupancyReportList extends AbstractPdfViewReports{
 				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 				cell.setPhrase(new Phrase(String.valueOf(simpleDateFormat.format(receptionReport.getArrDate())),f));
 				table.addCell(cell);
-				if( receptionReport.getActDepartDate()==null){
+				
+//				if( receptionReport.getActDepartDate()==null){
+//					cell.setPhrase(new Phrase(" ",f));
+//					table.addCell(cell);
+//				}else {
+//					cell.setPhrase(new Phrase(String.valueOf(simpleDateFormat.format(receptionReport.getActDepartDate())),f));
+//					table.addCell(cell);
+//				}
+				
+				//-- Meal Plan jishnu24052023--
+				
+				if( receptionReport.getMealPlan()==null){
 					cell.setPhrase(new Phrase(" ",f));
 					table.addCell(cell);
 				}else {
-					cell.setPhrase(new Phrase(String.valueOf(simpleDateFormat.format(receptionReport.getActDepartDate())),f));
-					table.addCell(cell);
+					
+					Integer var = Integer.valueOf(receptionReport.getMealPlan());
+					if(var == 1) {
+						cell.setPhrase(new Phrase(String.valueOf("EP"),f));
+						table.addCell(cell);
+					}
+					else if(var == 2) {
+						cell.setPhrase(new Phrase(String.valueOf("CP"),f));
+						table.addCell(cell);
+					}
+					else if(var == 3) {
+						cell.setPhrase(new Phrase(String.valueOf("MAP"),f));
+						table.addCell(cell);
+					}
+					else if(var == 4) {
+						cell.setPhrase(new Phrase(String.valueOf("AP"),f));
+						table.addCell(cell);
+					}
 				}
+				
 				count=count+1;
 			}
 		}else{

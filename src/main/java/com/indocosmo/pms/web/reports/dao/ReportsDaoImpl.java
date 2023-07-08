@@ -579,19 +579,46 @@ public class ReportsDaoImpl implements ReportsDao {
 
 	@Override
 	public List<ReceptionReport> getOccupancyDetails(Date fromDate, Date toDate) throws Exception {
-		String sql = "SELECT tbl1.room_number,tbl1.room_type_code,tbl1.first_name,tbl1.last_name,tbl1.nationality,"
-				+ "tbl2.room_charge,tbl1.arr_date,tbl1.act_depart_date" + " FROM"
-				+ " (SELECT checkin_hdr.checkin_no,checkin_hdr.room_number,checkin_dtl.first_name,checkin_dtl.last_name,"
-				+ "checkin_dtl.nationality,checkin_hdr.room_type_code,folio.folio_no,checkin_hdr.arr_date,checkin_hdr.act_depart_date"
-				+ " FROM checkin_dtl INNER JOIN checkin_hdr ON checkin_dtl.checkin_no = checkin_hdr.checkin_no"
-				+ " INNER JOIN folio ON folio.checkin_no = checkin_hdr.checkin_no"
-				+ " WHERE(checkin_hdr.arr_date BETWEEN'" + fromDate + "' AND'" + toDate + "') "
-				+ "or (checkin_hdr.act_depart_date BETWEEN'" + fromDate + "' AND'" + toDate + "') "
-				+ "or(checkin_hdr.arr_date<= '" + fromDate + "' and checkin_hdr.act_depart_date is null) "
-				+ "or(checkin_hdr.arr_date<= '" + fromDate + "' and checkin_hdr.act_depart_date >= '" + toDate + "' ) "
-				+ " and checkin_dtl.is_sharer = 0 ) tbl1" + " INNER JOIN ("
-				+ " SELECT SUM(nett_amount) AS room_charge,folio_no FROM txn WHERE txn_date <= '" + toDate
-				+ "' AND acc_mst_id NOT IN (5, 8, 4) GROUP BY folio_no) tbl2 " + " ON tbl1.folio_no = tbl2.folio_no;";
+//		String sql = "SELECT tbl1.room_number,tbl1.room_type_code,tbl1.first_name,tbl1.last_name,tbl1.nationality,"
+//				+ "tbl2.room_charge,tbl1.arr_date,tbl1.act_depart_date" + " FROM"
+//				+ " (SELECT checkin_hdr.checkin_no,checkin_hdr.room_number,checkin_dtl.first_name,checkin_dtl.last_name,"
+//				+ "checkin_dtl.nationality,checkin_hdr.room_type_code,folio.folio_no,checkin_hdr.arr_date,checkin_hdr.act_depart_date"
+//				+ " FROM checkin_dtl INNER JOIN checkin_hdr ON checkin_dtl.checkin_no = checkin_hdr.checkin_no"
+//				+ " INNER JOIN folio ON folio.checkin_no = checkin_hdr.checkin_no"
+//				+ " WHERE(checkin_hdr.arr_date BETWEEN'" + fromDate + "' AND'" + toDate + "') "
+//				+ "or (checkin_hdr.act_depart_date BETWEEN'" + fromDate + "' AND'" + toDate + "') "
+//				+ "or(checkin_hdr.arr_date<= '" + fromDate + "' and checkin_hdr.act_depart_date is null) "
+//				+ "or(checkin_hdr.arr_date<= '" + fromDate + "' and checkin_hdr.act_depart_date >= '" + toDate + "' ) "
+//				+ " and checkin_dtl.is_sharer = 0 ) tbl1" + " INNER JOIN ("
+//				+ " SELECT SUM(nett_amount) AS room_charge,folio_no FROM txn WHERE txn_date <= '" + toDate
+//				+ "' AND acc_mst_id NOT IN (5, 8, 4) GROUP BY folio_no) tbl2 " + " ON tbl1.folio_no = tbl2.folio_no;";
+		
+		String sql ="SELECT tbl1.room_number, tbl1.room_type_code, tbl1.first_name, tbl1.last_name, tbl1.status,tbl1.mealPlan AS meal_plan, " + 
+				"       tbl1.nationality, tbl2.room_charge, " + 
+				"       tbl1.arr_date, tbl1.act_depart_date " + 
+				"FROM ( " + 
+				"  SELECT checkin_hdr.checkin_no, checkin_hdr.room_number, checkin_hdr.status, " + 
+				"         checkin_dtl.first_name, checkin_dtl.last_name, checkin_dtl.nationality, checkin_hdr.room_type_code, " + 
+				"         folio.folio_no, checkin_hdr.arr_date, checkin_hdr.act_depart_date,checkin_hdr.mealPlan " + 
+				"  FROM checkin_dtl " + 
+				"  INNER JOIN checkin_hdr ON checkin_dtl.checkin_no = checkin_hdr.checkin_no " + 
+				"  INNER JOIN folio ON folio.checkin_no = checkin_hdr.checkin_no " + 
+				"  WHERE ( " + 
+				"    (checkin_hdr.arr_date BETWEEN '" + fromDate + "' AND '" + toDate + "') " + 
+				"    OR (checkin_hdr.act_depart_date BETWEEN '" + fromDate + "' AND '" + toDate + "') " + 
+				"    OR (checkin_hdr.arr_date <= '" + fromDate + "' AND checkin_hdr.act_depart_date IS NULL) " + 
+				"    OR (checkin_hdr.arr_date <= '" + fromDate + "' AND checkin_hdr.act_depart_date >= '" + toDate + "') " + 
+				"  ) " + 
+				"  AND checkin_dtl.is_sharer = 0 " + 
+				"  AND checkin_hdr.status = 5 " + 
+				") tbl1 " + 
+				"INNER JOIN ( " + 
+				"  SELECT SUM(nett_amount) AS room_charge, folio_no " + 
+				"  FROM txn " + 
+				"  WHERE txn_date <= '" + toDate + "' AND acc_mst_id NOT IN (5, 8, 4) " + 
+				"  GROUP BY folio_no " + 
+				") tbl2 ON tbl1.folio_no = tbl2.folio_no;";
+		
 		PreparedStatement getOccupancy = null;
 		ReceptionReport receptionReport = null;
 		List<ReceptionReport> occupancyList = new ArrayList<ReceptionReport>();
@@ -613,7 +640,8 @@ public class ReportsDaoImpl implements ReportsDao {
 			receptionReport.setNationality(rs.getString("nationality"));
 			receptionReport.setRoomCharge(0 - rs.getFloat("room_charge"));
 			receptionReport.setArrDate(rs.getDate("arr_date"));
-			receptionReport.setActDepartDate(rs.getDate("act_depart_date"));
+			//receptionReport.setActDepartDate(rs.getDate("act_depart_date"));
+			receptionReport.setMealPlan(rs.getString("meal_plan"));
 			occupancyList.add(receptionReport);
 		}
 		} catch (Exception ex) {

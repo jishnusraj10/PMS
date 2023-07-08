@@ -122,6 +122,7 @@ dashApp.controller('dashboardCtrl', ['$scope','$http','$mdDialog','$window',func
 			for(var i= 0;i<$scope.counts.avail_room_list.length;i++){
 				$scope.counts.free_rooms=$scope.counts.free_rooms+$scope.counts.avail_room_list[i].availRoom;
 			}
+			
 			$scope.counts.blocked_rooms=$scope.counts.total_rooms_in_inventory-$scope.counts.free_rooms-($scope.counts.occupied_rooms-$scope.counts.checkout_pending);
 			$scope.counts.free_rooms=$scope.counts.free_rooms-$scope.counts.dirty_cleaning-$scope.counts.checkout_pending;
 			

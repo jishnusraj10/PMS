@@ -204,9 +204,13 @@ public class OccupancyReportListExcel extends AbstractExcelView {
 			cellArrivalDate.setCellStyle(headCellStyle);
 			cellArrivalDate.setCellValue("Arrival Date");
 
+//			HSSFCell cellDepartDate = tableheading.createCell(7);
+//			cellDepartDate.setCellStyle(headCellStyle);
+//			cellDepartDate.setCellValue("Depart Date");
+			
 			HSSFCell cellDepartDate = tableheading.createCell(7);
 			cellDepartDate.setCellStyle(headCellStyle);
-			cellDepartDate.setCellValue("Depart Date");
+			cellDepartDate.setCellValue("Meal Plan");
 
 			int count = 1;
 
@@ -269,7 +273,30 @@ public class OccupancyReportListExcel extends AbstractExcelView {
 					cellActDepartDateData.setCellValue(simpleDateFormat.format(receptionReport.getActDepartDate()));
 
 				}
+				
+				
+				HSSFCell cellMealPlanData = detailRow.createCell(7);
+				cellMealPlanData.setCellStyle(contentCellStyle);
 
+				if (receptionReport.getMealPlan() == null) {
+
+					cellMealPlanData.setCellValue("");
+
+				} else {
+
+					Integer var = Integer.valueOf(receptionReport.getMealPlan());
+					if (var == 1) {
+						cellMealPlanData.setCellValue("EP");
+					} else if (var == 2) {
+						cellMealPlanData.setCellValue("CP");
+					} else if (var == 3) {
+						cellMealPlanData.setCellValue("MAP");
+					} else if (var == 4) {
+						cellMealPlanData.setCellValue("AP");
+					}
+
+				}
+				
 				count = count + 1;
 				sheet.createFreezePane(0,6);
 			}
